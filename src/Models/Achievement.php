@@ -28,7 +28,7 @@ class Achievement extends Model
 
     public const CACHE_KEY = 'bradietilley_achievements';
 
-    public const CACHE_KEY_MAP = 'bradietilley_achievement.map';
+    public const CACHE_KEY_EVENTS = 'bradietilley_achievement.events';
 
     public $table = 'achievements';
 
@@ -110,7 +110,7 @@ class Achievement extends Model
     public static function getEventMap(): array
     {
         return Cache::remember(
-            static::CACHE_KEY_MAP,
+            static::CACHE_KEY_EVENTS,
             now()->addHour(),
             fn () => static::getEventMapRaw(),
         );
@@ -120,7 +120,17 @@ class Achievement extends Model
     {
         $class = AchievementsConfig::getListenerClass();
 
-        return []; // todo
+        return static::all()
+            ->mapWithKeys(function (Achievement $achievement) use ($class) {
+                $data = [];
+
+                foreach ($achievement->events as $event) {
+                    $data[$event] = $class;
+                }
+
+                return $data;
+            })
+            ->all();
     }
 
     /**
