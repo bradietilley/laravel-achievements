@@ -9,5 +9,5 @@ interface EarnsReputation
 {
     public function getReputation(): Reputation;
 
-    public function addReputation(int $points = 1, ?string $message = null, (Model&EarnsReputation)|null $user = null): Reputation;
+    public function addReputation(int $points = 1, ?string $message = null, Model|null $user = null): Reputation;
 }

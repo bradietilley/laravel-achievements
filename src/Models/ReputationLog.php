@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int $points
+ * @property string $message
  * @property ReputationLog $reputation
  * @property-read Collection<int, ReputationLog> $history
  * @property-read User $user

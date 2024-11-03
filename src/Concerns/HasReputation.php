@@ -2,7 +2,6 @@
 
 namespace BradieTilley\Achievements\Concerns;
 
-use BradieTilley\Achievements\Contracts\EarnsReputation;
 use BradieTilley\Achievements\Models\Reputation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -31,7 +30,7 @@ trait HasReputation
         return $this->reputation;
     }
 
-    public function addReputation(int $points = 1, ?string $message = null, (Model&EarnsReputation)|null $user = null): Reputation
+    public function addReputation(int $points = 1, ?string $message = null, Model|null $user = null): Reputation
     {
         return $this->reputation->addPoints($points, $message, $user);
     }

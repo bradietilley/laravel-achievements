@@ -7,6 +7,7 @@ use BradieTilley\Achievements\Contracts\EarnsReputation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property int $points
@@ -46,6 +47,8 @@ class Reputation extends Model
 
     public function addPoints(int $points = 1, ?string $message = null, ?Model $user = null): Reputation
     {
+        $user ??= Auth::user();
+
         $log = ReputationLog::getConfiguredClass();
         $log = new $log([
             'reputation_id' => $this->getKey(),
