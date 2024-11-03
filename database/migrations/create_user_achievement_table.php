@@ -1,6 +1,6 @@
 <?php
 
-use BradieTilley\Achievements\AchievementsConfig;
+use BradieTilley\Achievements\Models\Achievement;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,15 +11,15 @@ return new class () extends Migration {
         Schema::create('user_achievement', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(AchievementsConfig::getAchievementModel(), 'achievement_id');
-            $table->morphs('model');
+            $table->foreignIdFor(Achievement::getConfiguredClass(), 'achievement_id');
+            $table->morphs('user');
 
             $table->timestamps();
 
             $table->unique([
                 'achievement_id',
-                'model_type',
-                'model_id',
+                'user_type',
+                'user_id',
             ]);
         });
     }

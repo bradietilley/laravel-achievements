@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class ReputationLog extends Model
 {
-    public $table = 'reputations_logs';
+    public const UPDATED_AT = null;
+
+    public $table = 'reputation_logs';
 
     protected $guarded = [];
 
@@ -26,9 +28,17 @@ class ReputationLog extends Model
         ];
     }
 
+    /**
+     * @return class-string<self>
+     */
+    public static function getConfiguredClass(): string
+    {
+        return AchievementsConfig::getReputationLogModel();
+    }
+
     public function reputation(): BelongsTo
     {
-        return $this->belongsTo(AchievementsConfig::getReputationModel(), 'reputation_id');
+        return $this->belongsTo(Reputation::getConfiguredClass(), 'reputation_id');
     }
 
     public function user(): MorphTo

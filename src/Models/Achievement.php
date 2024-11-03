@@ -45,6 +45,14 @@ class Achievement extends Model
     }
 
     /**
+     * @return class-string<self>
+     */
+    public static function getConfiguredClass(): string
+    {
+        return AchievementsConfig::getAchievementModel();
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory(): AchievementFactory
@@ -54,20 +62,20 @@ class Achievement extends Model
 
     public function userAchievements(): HasMany
     {
-        return $this->hasMany(AchievementsConfig::getUserAchievementModel());
+        return $this->hasMany(UserAchievement::getConfiguredClass());
     }
 
     public function give(Model&EarnsAchievements $user): static
     {
         try {
-            $model = AchievementsConfig::getUserAchievementModel();
-            $model = new $model([
-                'model_type' => $user->getMorphClass(),
-                'model_id' => $user->getKey(),
+            $userAchievement = UserAchievement::getConfiguredClass();
+            $userAchievement = new $userAchievement([
+                'user_type' => $user->getMorphClass(),
+                'user_id' => $user->getKey(),
                 'achievement_id' => $this->getKey(),
             ]);
 
-            $this->userAchievements()->save($model);
+            $this->userAchievements()->save($userAchievement);
         } catch (QueryException $e) {
             if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
                 return $this;
@@ -82,7 +90,7 @@ class Achievement extends Model
     public function revoke(Model&EarnsAchievements $user, bool $force = false): static
     {
         if ($this->reverseable || $force) {
-            $existing = $this->userAchievements()->whereMorphedTo('model', $user)->first();
+            $existing = $this->userAchievements()->whereMorphedTo('user', $user)->first();
 
             $existing?->delete();
         }

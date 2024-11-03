@@ -15,7 +15,7 @@ class AchievementsServiceProvider extends PackageServiceProvider
             ->hasMigrations(
                 'create_achievements_table',
                 'create_reputations_table',
-                'create_reputations_logs_table',
+                'create_reputation_logs_table',
                 'create_user_achievement_table',
             );
     }

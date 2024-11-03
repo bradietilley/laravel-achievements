@@ -17,7 +17,7 @@ trait HasAchievements
 {
     public function achievements(): MorphToMany
     {
-        return $this->morphToMany(AchievementsConfig::getAchievementModel(), 'model', 'user_achievement', 'model_id', 'achievement_id');
+        return $this->morphToMany(AchievementsConfig::getAchievementModel(), 'user', 'user_achievement', 'user_id', 'achievement_id');
     }
 
     /**

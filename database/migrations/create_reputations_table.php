@@ -10,7 +10,7 @@ return new class () extends Migration {
         Schema::create('reputations', function (Blueprint $table) {
             $table->id();
 
-            $table->morphs('model');
+            $table->morphs('user');
             $table->bigInteger('points')->index();
 
             $table->timestamps();

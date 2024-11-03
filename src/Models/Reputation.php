@@ -26,22 +26,31 @@ class Reputation extends Model
         ];
     }
 
-    public function model(): MorphTo
+    /**
+     * @return class-string<self>
+     */
+    public static function getConfiguredClass(): string
     {
-        return $this->morphTo('model');
+        return AchievementsConfig::getReputationModel();
+    }
+
+    public function user(): MorphTo
+    {
+        return $this->morphTo('user');
     }
 
     public function logs(): HasMany
     {
-        return $this->hasMany(AchievementsConfig::getReputationLogModel(), 'reputation_id');
+        return $this->hasMany(ReputationLog::getConfiguredClass(), 'reputation_id');
     }
 
-    public function addPoints(int $points = 1, ?string $message = null, ?Model $user = null): static
+    public function addPoints(int $points = 1, ?string $message = null, ?Model $user = null): Reputation
     {
-        $log = AchievementsConfig::getReputationLogModel();
+        $log = ReputationLog::getConfiguredClass();
         $log = new $log([
-            'model_type' => $user?->getMorphClass(),
-            'model_id' => $user?->getKey(),
+            'reputation_id' => $this->getKey(),
+            'user_type' => $user?->getMorphClass(),
+            'user_id' => $user?->getKey(),
             'points' => $points,
             'message' => $message,
         ]);

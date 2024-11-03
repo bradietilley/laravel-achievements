@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * @property-read Model&EarnsAchievements $model
+ * @property-read Model&EarnsAchievements $user
  * @property-read Achievement $achievement
  */
 class UserAchievement extends Model
@@ -23,13 +23,21 @@ class UserAchievement extends Model
         ];
     }
 
-    public function model(): MorphTo
+    /**
+     * @return class-string<self>
+     */
+    public static function getConfiguredClass(): string
     {
-        return $this->morphTo('model');
+        return AchievementsConfig::getUserAchievementModel();
+    }
+
+    public function user(): MorphTo
+    {
+        return $this->morphTo('user');
     }
 
     public function achievement(): BelongsTo
     {
-        return $this->belongsTo(AchievementsConfig::getAchievementModel(), 'achievement_id');
+        return $this->belongsTo(Achievement::getConfiguredClass(), 'achievement_id');
     }
 }

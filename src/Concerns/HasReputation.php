@@ -2,9 +2,10 @@
 
 namespace BradieTilley\Achievements\Concerns;
 
+use BradieTilley\Achievements\Contracts\EarnsReputation;
 use BradieTilley\Achievements\Models\Reputation;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * @mixin Model
@@ -13,16 +14,24 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 trait HasReputation
 {
-    public function reputation(): MorphTo
+    public function reputation(): MorphOne
     {
-        return $this->morphTo()->withDefault(function () {
-            return new Reputation([
-                'points' => 0,
-            ]);
-        }); // todo
+        return $this->morphOne(Reputation::getConfiguredClass(), 'user', 'user_type', 'user_id')
+            ->withDefault(function () {
+                return Reputation::create([
+                    'points' => 0,
+                    'user_type' => $this->getMorphClass(),
+                    'user_id' => $this->getKey(),
+                ]);
+            });
     }
 
-    public function addReputation(int $points = 1, ?string $message = null, ?Model $user = null): Reputation
+    public function getReputation(): Reputation
+    {
+        return $this->reputation;
+    }
+
+    public function addReputation(int $points = 1, ?string $message = null, (Model&EarnsReputation)|null $user = null): Reputation
     {
         return $this->reputation->addPoints($points, $message, $user);
     }
