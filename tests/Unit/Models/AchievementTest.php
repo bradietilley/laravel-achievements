@@ -1,10 +1,11 @@
 <?php
 
-use BradieTilley\Achievements\Listeners\EventListener;
+use BradieTilley\Achievements\Achievements;
 use BradieTilley\Achievements\Models\Achievement;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Cache;
+use Workbench\App\Models\User;
 
 test('an achievement model can be created', function () {
     $achievement = Achievement::create([
@@ -28,30 +29,42 @@ test('achievements can be cached', function () {
     $achievements = Achievement::factory(10)->create();
     expect(Achievement::allCached())->toHaveCount(0);
 
-    Cache::forget(Achievement::CACHE_KEY);
+    Cache::forget(Achievements::make()->regenerateCache());
     expect(Achievement::allCached())->toHaveCount(10);
 });
 
 test('an achievement model can have events', function () {
+    $user = create_a_user();
+    $this->actingAs($user);
+
     $achievement1 = Achievement::factory()
         ->events([ Authenticated::class ])
         ->createOne();
+
+    $achievement1->listenToEloquent(User::class, 'updated')->save();
     expect($achievement1->events)->toBe([
         Authenticated::class,
+        'eloquent.updated: Workbench\\App\\Models\\User',
     ]);
+
+    $achievements = Achievements::make();
+    $achievements->regenerateCache();
+    $achievements->registerEventListener();
 
     $achievement2 = Achievement::factory()
         ->events([ Authenticated::class, Login::class ])
         ->createOne();
+
     expect($achievement2->events)->toBe([
         Authenticated::class,
         Login::class,
     ]);
 
-    // Achievement::findByEvent(Authenticated::class);
+    $achievements->regenerateCache();
 
-    expect(Achievement::getEventMap())->toBe([
-        Authenticated::class => EventListener::class,
-        Login::class => EventListener::class,
+    expect($achievements->getEvents())->toBe([
+        Authenticated::class,
+        'eloquent.updated: Workbench\App\Models\User',
+        Login::class,
     ]);
 });

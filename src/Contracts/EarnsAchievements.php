@@ -12,4 +12,6 @@ interface EarnsAchievements
     public function giveAchievement(string|Achievement $achievement): static;
 
     public function revokeAchievement(string|Achievement $achievement): static;
+
+    public function hasAchievement(string|Achievement $achievement): bool;
 }

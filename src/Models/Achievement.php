@@ -2,15 +2,17 @@
 
 namespace BradieTilley\Achievements\Models;
 
+use BradieTilley\Achievements\Achievements;
 use BradieTilley\Achievements\AchievementsConfig;
 use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Database\Factories\AchievementFactory;
+use BradieTilley\Achievements\Objects\Criteria;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * @template TAchievement of self
@@ -25,10 +27,6 @@ class Achievement extends Model
 {
     /** @use HasFactory<AchievementFactory> */
     use HasFactory;
-
-    public const CACHE_KEY = 'bradietilley_achievements';
-
-    public const CACHE_KEY_EVENTS = 'bradietilley_achievement.events';
 
     public $table = 'achievements';
 
@@ -63,6 +61,27 @@ class Achievement extends Model
     public function userAchievements(): HasMany
     {
         return $this->hasMany(UserAchievement::getConfiguredClass());
+    }
+
+    public function listenToEloquent(string|Model $model, string ...$events): static
+    {
+        $model = $model instanceof Model ? $model::class : $model;
+        $events = Arr::map($events, fn (string $event) => "eloquent.{$event}: {$model}");
+
+        return $this->listenTo(...$events);
+    }
+
+    public function listenTo(string ...$events): static
+    {
+        $events = Collection::make($this->events)
+            ->concat($events)
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->events = $events;
+
+        return $this;
     }
 
     public function give(Model&EarnsAchievements $user): static
@@ -100,37 +119,7 @@ class Achievement extends Model
 
     public static function allCached(): Collection
     {
-        return Cache::remember(
-            static::CACHE_KEY,
-            now()->addHour(),
-            fn () => static::all()->collect(),
-        );
-    }
-
-    public static function getEventMap(): array
-    {
-        return Cache::remember(
-            static::CACHE_KEY_EVENTS,
-            now()->addHour(),
-            fn () => static::getEventMapRaw(),
-        );
-    }
-
-    protected static function getEventMapRaw(): array
-    {
-        $class = AchievementsConfig::getListenerClass();
-
-        return static::all()
-            ->mapWithKeys(function (Achievement $achievement) use ($class) {
-                $data = [];
-
-                foreach ($achievement->events as $event) {
-                    $data[$event] = $class;
-                }
-
-                return $data;
-            })
-            ->all();
+        return Achievements::make()->getAchievements();
     }
 
     /**

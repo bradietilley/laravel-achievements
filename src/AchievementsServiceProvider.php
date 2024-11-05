@@ -19,4 +19,14 @@ class AchievementsServiceProvider extends PackageServiceProvider
                 'create_user_achievement_table',
             );
     }
+
+    public function packageRegistered(): void
+    {
+        $this->app->singleton(Achievements::class, Achievements::class);
+    }
+
+    public function packageBooted(): void
+    {
+        Achievements::make()->registerEventListener();
+    }
 }

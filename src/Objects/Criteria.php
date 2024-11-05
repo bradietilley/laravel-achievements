@@ -2,8 +2,11 @@
 
 namespace BradieTilley\Achievements\Objects;
 
-use Illuminate\Support\Fluent;
+use BradieTilley\Achievements\Contracts\EarnsAchievements;
+use BradieTilley\Achievements\Models\Achievement;
+use Illuminate\Database\Eloquent\Model;
 
-class Criteria extends Fluent
+abstract class Criteria
 {
+    abstract public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool;
 }
