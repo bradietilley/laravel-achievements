@@ -2,19 +2,15 @@
 
 use BradieTilley\Achievements\Criteria\HasRelationCountCriteria;
 use BradieTilley\Achievements\Models\Achievement;
-use Illuminate\Support\Collection;
-use Workbench\App\Models\Post;
 
-test('the HasRelationCountCriteria can correctly determine eligibility', function (int $count, int $min, bool $eligible) {
-    $criteria = new HasRelationCountCriteria('posts', $min);
+test('the HasFieldCountCriteria can correctly determine eligibility', function (int $count, int $min, bool $eligible) {
+    $criteria = new HasRelationCountCriteria('logins', $min);
     $achievement = new Achievement();
     $user = create_a_user();
 
-    Collection::range(1, $count)->each(
-        fn () => Post::create([
-            'user_id' => $user->id,
-        ]),
-    );
+    $user->fill([
+        'logins' => $count,
+    ]);
     expect($criteria->isEligible($achievement, $user, 'SomeEventNotRelevant', null))->toBe($eligible);
 })->with([
     [ 3, 5, false, ],

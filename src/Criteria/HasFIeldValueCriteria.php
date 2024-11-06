@@ -6,16 +6,16 @@ use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Models\Achievement;
 use Illuminate\Database\Eloquent\Model;
 
-class HasRelationCountCriteria extends Criteria
+class HasFIeldValueCriteria extends Criteria
 {
-    public function __construct(public string $relation, public int $count)
+    public function __construct(public string $field, public mixed $value)
     {
     }
 
     public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool
     {
-        $count = $user->{$this->relation};
+        $value = data_get($user, $this->field);
 
-        return $count >= $this->count;
+        return $value >= $this->value;
     }
 }

@@ -4,7 +4,7 @@ use BradieTilley\Achievements\Criteria\CurrentDateCriteria;
 use BradieTilley\Achievements\Models\Achievement;
 use Carbon\Carbon;
 
-test('the CurrentDateCriteriaTest can correctly determine eligibility', function (string $current, string|DateTimeInterface $match, bool $eligible) {
+test('the CurrentDateCriteria can correctly determine eligibility', function (string $current, string|DateTimeInterface $match, bool $eligible) {
     $criteria = new CurrentDateCriteria($match);
     $achievement = new Achievement();
     $user = create_a_user();

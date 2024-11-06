@@ -27,12 +27,10 @@ class Achievements
 
     public const CACHE_KEY_EVENTS = 'bradietilley_achievement.events';
 
-    protected Repository $cache;
-
     /**
      * A list of ignored events, some irrelevant, some to prevent recursion
      */
-    protected array $ignoredEvents = [
+    public const DEFAULT_IGNORED_EVENTS = [
         \Illuminate\Console\Events\ArtisanStarting::class,
         \Illuminate\Database\Events\ConnectionEstablished::class,
         \Illuminate\Database\Events\ConnectionEvent::class,
@@ -70,6 +68,8 @@ class Achievements
         \Illuminate\Cache\Events\WritingManyKeys::class,
     ];
 
+    protected Repository $cache;
+
     public function __construct(
         protected BusDispatcher $bus,
         protected EventsDispatcher $events,
@@ -101,7 +101,7 @@ class Achievements
     }
 
     /**
-     * Regenerate the cache after adding or updating achievements
+     * Regenerate the cache after adding or updating achievements.
      */
     public function regenerateCache(): void
     {
@@ -113,7 +113,7 @@ class Achievements
     }
 
     /**
-     * Get all achievements (cached)
+     * Get all achievements (cached).
      *
      * @return Collection<int, Achievement>
      */
@@ -126,6 +126,9 @@ class Achievements
         );
     }
 
+    /**
+     * Get the achievement by name.
+     */
     public function getAchievement(string|Achievement $achievement): Achievement
     {
         $class = Achievement::alias();
@@ -145,7 +148,7 @@ class Achievements
     }
 
     /**
-     * Get all events that are leveraged by achievements
+     * Get all events that are leveraged by achievements.
      *
      * @return array<int, string>
      */
@@ -189,11 +192,17 @@ class Achievements
             ->values();
     }
 
+    /**
+     * Get a list of all events to ignore.
+     */
     public function getIgnoredEvents(): array
     {
-        return $this->ignoredEvents;
+        return static::DEFAULT_IGNORED_EVENTS;
     }
 
+    /**
+     * Handle the inound event (which is a non-ignored event).
+     */
     public function handleEvent(string $event, array $payload): void
     {
         $user = $this->user();
@@ -215,6 +224,9 @@ class Achievements
         }
     }
 
+    /**
+     * Give the given achievement to the given user.
+     */
     public function giveAchievement(Achievement $achievement, Model&EarnsAchievements $user): void
     {
         try {
@@ -238,6 +250,11 @@ class Achievements
         }
     }
 
+    /**
+     * Revoke the given achievement from the given user.
+     *
+     * Only if the Achievement is reverseable (and/or if forcefully revoked).
+     */
     public function revokeAchievement(Achievement $achievement, Model&EarnsAchievements $user, bool $force = false): void
     {
         if ($achievement->reverseable || $force) {
