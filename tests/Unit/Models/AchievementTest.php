@@ -4,7 +4,6 @@ use BradieTilley\Achievements\Achievements;
 use BradieTilley\Achievements\Models\Achievement;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Support\Facades\Cache;
 use Workbench\App\Models\User;
 
 test('an achievement model can be created', function () {

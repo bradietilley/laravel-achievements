@@ -168,7 +168,7 @@ class Achievements
 
     public function handleEvent(string $event, array $payload): void
     {
-        $user = Achievements::make()->user();
+        $user = $this->user();
 
         if ($user === null) {
             return;
@@ -176,7 +176,7 @@ class Achievements
 
         $job = AchievementsConfig::getProcessAchievementJob();
 
-        foreach (Achievements::byEvent($event) as $achievement) {
+        foreach (static::byEvent($event) as $achievement) {
             if ($achievement->async) {
                 $this->bus->dispatch(new $job($achievement, $user, $event, null));
 
