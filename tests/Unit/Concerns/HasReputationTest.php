@@ -19,9 +19,9 @@ test('a user will be given a new reputation if one does not exist', function () 
 test('reputation points can be added to a user', function () {
     $user = create_a_user();
 
-    $user->addReputation(10);
+    $user->giveReputation(10);
     expect($user->reputation->points)->toBe(10);
 
-    $user->addReputation(5);
+    $user->giveReputation(5);
     expect($user->reputation->points)->toBe(15);
 });

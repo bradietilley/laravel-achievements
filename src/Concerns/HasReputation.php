@@ -17,6 +17,10 @@ trait HasReputation
     {
         return $this->morphOne(Reputation::getConfiguredClass(), 'user', 'user_type', 'user_id')
             ->withDefault(function () {
+                if ($this->exists === false) {
+                    return null;
+                }
+
                 return Reputation::create([
                     'points' => 0,
                     'user_type' => $this->getMorphClass(),
@@ -30,7 +34,7 @@ trait HasReputation
         return $this->reputation;
     }
 
-    public function addReputation(int $points = 1, ?string $message = null, Model|null $user = null): Reputation
+    public function giveReputation(int $points = 1, ?string $message = null, Model|null $user = null): Reputation
     {
         return $this->reputation->addPoints($points, $message, $user);
     }

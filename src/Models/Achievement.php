@@ -4,6 +4,7 @@ namespace BradieTilley\Achievements\Models;
 
 use BradieTilley\Achievements\Achievements;
 use BradieTilley\Achievements\AchievementsConfig;
+use BradieTilley\Achievements\Casts\CriteriaSerializationCast;
 use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Database\Factories\AchievementFactory;
 use BradieTilley\Achievements\Objects\Criteria;
@@ -35,7 +36,7 @@ class Achievement extends Model
     protected function casts(): array
     {
         return [
-            'criteria' => 'array',
+            'criteria' => CriteriaSerializationCast::class,
             'events' => 'array',
             'reverseable' => 'boolean',
             'async' => 'boolean',

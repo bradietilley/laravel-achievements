@@ -23,27 +23,27 @@ test('a ReputationLog is written when points are added', function () {
 
     expect($logs())->toBe([]);
 
-    $user->addReputation(10);
+    $user->giveReputation(10);
     expect($logs())->toBe([
         [ 'points' => 10, ],
     ]);
 
-    $user->addReputation(-10);
+    $user->giveReputation(-10);
     expect($logs())->toBe([
         [ 'points' => -10, ],
     ]);
 
-    $user->addReputation(1);
-    $user->addReputation(2);
-    $user->addReputation(3);
+    $user->giveReputation(1);
+    $user->giveReputation(2);
+    $user->giveReputation(3);
     expect($logs())->toBe([
         [ 'points' => 1, ],
         [ 'points' => 2, ],
         [ 'points' => 3, ],
     ]);
 
-    $user->addReputation(5000, 'Good lad, does amazing work');
-    $user->addReputation(-1000, 'Naughty boy');
+    $user->giveReputation(5000, 'Good lad, does amazing work');
+    $user->giveReputation(-1000, 'Naughty boy');
     expect($logs())->toBe([
         [
             'points' => 5000,
@@ -59,8 +59,8 @@ test('a ReputationLog is written when points are added', function () {
     $other = create_a_user();
     $this->actingAs($admin);
 
-    $user->addReputation(50);
-    $user->addReputation(55, user: $other);
+    $user->giveReputation(50);
+    $user->giveReputation(55, user: $other);
     expect($logs())->toBe([
         [
             'points' => 50,
