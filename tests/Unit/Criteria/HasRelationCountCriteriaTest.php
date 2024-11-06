@@ -1,7 +1,7 @@
 <?php
 
+use BradieTilley\Achievements\Criteria\HasRelationCountCriteria;
 use BradieTilley\Achievements\Models\Achievement;
-use BradieTilley\Achievements\Objects\HasRelationCountCriteria;
 use Illuminate\Support\Collection;
 use Workbench\App\Models\Post;
 

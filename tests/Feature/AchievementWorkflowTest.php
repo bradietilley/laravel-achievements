@@ -1,9 +1,9 @@
 <?php
 
 use BradieTilley\Achievements\Achievements;
+use BradieTilley\Achievements\Criteria\CurrentDateCriteria;
+use BradieTilley\Achievements\Criteria\MinimumPointsCriteria;
 use BradieTilley\Achievements\Models\Achievement;
-use BradieTilley\Achievements\Objects\CurrentDateCriteria;
-use BradieTilley\Achievements\Objects\MinimumPointsCriteria;
 use Illuminate\Support\Facades\Auth;
 use Workbench\App\Events\BasicExampleEvent;
 

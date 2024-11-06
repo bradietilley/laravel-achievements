@@ -1,7 +1,7 @@
 <?php
 
+use BradieTilley\Achievements\Criteria\CurrentDateCriteria;
 use BradieTilley\Achievements\Models\Achievement;
-use BradieTilley\Achievements\Objects\CurrentDateCriteria;
 use Carbon\Carbon;
 
 test('the CurrentDateCriteriaTest can correctly determine eligibility', function (string $current, string|DateTimeInterface $match, bool $eligible) {

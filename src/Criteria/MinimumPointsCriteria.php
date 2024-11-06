@@ -1,6 +1,6 @@
 <?php
 
-namespace BradieTilley\Achievements\Objects;
+namespace BradieTilley\Achievements\Criteria;
 
 use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Contracts\EarnsReputation;

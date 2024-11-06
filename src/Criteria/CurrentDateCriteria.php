@@ -1,21 +1,23 @@
 <?php
 
-namespace BradieTilley\Achievements\Objects;
+namespace BradieTilley\Achievements\Criteria;
 
 use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Models\Achievement;
+use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class HasRelationCountCriteria extends Criteria
+class CurrentDateCriteria extends Criteria
 {
-    public function __construct(public string $relation, public int $count)
+    public function __construct(public string|DateTimeInterface $date)
     {
     }
 
     public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool
     {
-        $count = $user->{$this->relation}()->count();
+        $sameDay = Carbon::now()->isSameDay($this->date);
 
-        return $count >= $this->count;
+        return $sameDay;
     }
 }

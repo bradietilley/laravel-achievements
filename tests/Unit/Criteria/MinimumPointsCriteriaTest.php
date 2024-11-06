@@ -1,7 +1,7 @@
 <?php
 
+use BradieTilley\Achievements\Criteria\MinimumPointsCriteria;
 use BradieTilley\Achievements\Models\Achievement;
-use BradieTilley\Achievements\Objects\MinimumPointsCriteria;
 
 test('the MinimumPointsCriteria can correctly determine eligibility', function (int $points, int $min, bool $eligible) {
     $criteria = new MinimumPointsCriteria($min);
