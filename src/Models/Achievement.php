@@ -8,6 +8,8 @@ use BradieTilley\Achievements\Casts\CriteriaSerializationCast;
 use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Criteria\Criteria;
 use BradieTilley\Achievements\Database\Factories\AchievementFactory;
+use BradieTilley\Achievements\Models\Observers\AchievementObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,6 +26,7 @@ use Illuminate\Support\Collection;
  * @property bool $reverseable
  * @property bool $async
  */
+#[ObservedBy(AchievementObserver::class)]
 class Achievement extends Model
 {
     /** @use HasFactory<AchievementFactory> */

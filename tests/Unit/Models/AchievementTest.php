@@ -26,10 +26,10 @@ test('an achievement model can be created', function () {
 test('achievements can be cached', function () {
     expect(Achievement::allCached())->toHaveCount(0);
 
-    $achievements = Achievement::factory(10)->create();
+    $achievements = Achievement::factory(10)->createQuietly();
     expect(Achievement::allCached())->toHaveCount(0);
 
-    Cache::forget(Achievements::make()->regenerateCache());
+    Achievements::make()->regenerateCache();
     expect(Achievement::allCached())->toHaveCount(10);
 });
 
