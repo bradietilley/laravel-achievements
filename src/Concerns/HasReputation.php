@@ -15,7 +15,7 @@ trait HasReputation
 {
     public function reputation(): MorphOne
     {
-        return $this->morphOne(Reputation::getConfiguredClass(), 'user', 'user_type', 'user_id')
+        return $this->morphOne(Reputation::alias(), 'user', 'user_type', 'user_id')
             ->withDefault(function () {
                 if ($this->exists === false) {
                     return null;

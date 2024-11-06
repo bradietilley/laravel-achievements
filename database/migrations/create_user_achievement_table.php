@@ -11,7 +11,7 @@ return new class () extends Migration {
         Schema::create('user_achievement', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(Achievement::getConfiguredClass(), 'achievement_id');
+            $table->foreignIdFor(Achievement::alias(), 'achievement_id');
             $table->morphs('user');
 
             $table->timestamps();

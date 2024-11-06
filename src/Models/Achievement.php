@@ -48,7 +48,7 @@ class Achievement extends Model
     /**
      * @return class-string<self>
      */
-    public static function getConfiguredClass(): string
+    public static function alias(): string
     {
         return AchievementsConfig::getAchievementModel();
     }
@@ -63,7 +63,7 @@ class Achievement extends Model
 
     public function userAchievements(): HasMany
     {
-        return $this->hasMany(UserAchievement::getConfiguredClass());
+        return $this->hasMany(UserAchievement::alias());
     }
 
     /**

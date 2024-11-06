@@ -32,14 +32,14 @@ class ReputationLog extends Model
     /**
      * @return class-string<self>
      */
-    public static function getConfiguredClass(): string
+    public static function alias(): string
     {
         return AchievementsConfig::getReputationLogModel();
     }
 
     public function reputation(): BelongsTo
     {
-        return $this->belongsTo(Reputation::getConfiguredClass(), 'reputation_id');
+        return $this->belongsTo(Reputation::alias(), 'reputation_id');
     }
 
     public function user(): MorphTo

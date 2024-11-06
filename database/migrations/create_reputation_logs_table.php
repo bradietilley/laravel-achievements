@@ -11,7 +11,7 @@ return new class () extends Migration {
         Schema::create('reputation_logs', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(Reputation::getConfiguredClass(), 'reputation_id');
+            $table->foreignIdFor(Reputation::alias(), 'reputation_id');
             $table->nullableMorphs('user'); // user who performed the action
             $table->string('message')->nullable();
             $table->bigInteger('points')->index();

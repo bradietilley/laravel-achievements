@@ -128,7 +128,7 @@ class Achievements
 
     public function getAchievement(string|Achievement $achievement): Achievement
     {
-        $class = Achievement::getConfiguredClass();
+        $class = Achievement::alias();
         $name = $achievement instanceof Achievement ? $achievement->name : $achievement;
 
         if ($achievement::class === $class) {
@@ -218,7 +218,7 @@ class Achievements
     public function giveAchievement(Achievement $achievement, Model&EarnsAchievements $user): void
     {
         try {
-            $userAchievement = UserAchievement::getConfiguredClass();
+            $userAchievement = UserAchievement::alias();
             $userAchievement = new $userAchievement([
                 'user_type' => $user->getMorphClass(),
                 'user_id' => $user->getKey(),
@@ -227,7 +227,7 @@ class Achievements
 
             $achievement->userAchievements()->save($userAchievement);
 
-            $event = AchievementGranted::getConfiguredClass();
+            $event = AchievementGranted::alias();
             $this->events->dispatch(new $event($achievement, $user));
         } catch (QueryException $e) {
             if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
@@ -246,7 +246,7 @@ class Achievements
             if ($existing) {
                 $existing->delete();
 
-                $event = AchievementRevoked::getConfiguredClass();
+                $event = AchievementRevoked::alias();
                 $this->events->dispatch(new $event($achievement, $user));
             }
         }

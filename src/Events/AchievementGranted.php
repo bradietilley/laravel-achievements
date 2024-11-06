@@ -13,7 +13,7 @@ class AchievementGranted
     {
     }
 
-    public static function getConfiguredClass(): string
+    public static function alias(): string
     {
         return AchievementsConfig::getAchievementGrantedEvent();
     }

@@ -26,7 +26,7 @@ class UserAchievement extends Model
     /**
      * @return class-string<self>
      */
-    public static function getConfiguredClass(): string
+    public static function alias(): string
     {
         return AchievementsConfig::getUserAchievementModel();
     }
@@ -38,6 +38,6 @@ class UserAchievement extends Model
 
     public function achievement(): BelongsTo
     {
-        return $this->belongsTo(Achievement::getConfiguredClass(), 'achievement_id');
+        return $this->belongsTo(Achievement::alias(), 'achievement_id');
     }
 }

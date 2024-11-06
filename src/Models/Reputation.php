@@ -30,7 +30,7 @@ class Reputation extends Model
     /**
      * @return class-string<self>
      */
-    public static function getConfiguredClass(): string
+    public static function alias(): string
     {
         return AchievementsConfig::getReputationModel();
     }
@@ -42,14 +42,14 @@ class Reputation extends Model
 
     public function logs(): HasMany
     {
-        return $this->hasMany(ReputationLog::getConfiguredClass(), 'reputation_id');
+        return $this->hasMany(ReputationLog::alias(), 'reputation_id');
     }
 
     public function addPoints(int $points = 1, ?string $message = null, ?Model $user = null): Reputation
     {
         $user ??= Auth::user();
 
-        $log = ReputationLog::getConfiguredClass();
+        $log = ReputationLog::alias();
         $log = new $log([
             'reputation_id' => $this->getKey(),
             'user_type' => $user?->getMorphClass(),
