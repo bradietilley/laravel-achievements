@@ -2,6 +2,8 @@
 
 namespace BradieTilley\Achievements;
 
+use BradieTilley\Achievements\Events\AchievementGranted;
+use BradieTilley\Achievements\Events\AchievementRevoked;
 use BradieTilley\Achievements\Jobs\ProcessAchievement;
 use BradieTilley\Achievements\Models\Achievement;
 use BradieTilley\Achievements\Models\Reputation;
@@ -71,5 +73,25 @@ class AchievementsConfig
     public static function getProcessAchievementJob(): string
     {
         return static::get('jobs.process_achievement', ProcessAchievement::class);
+    }
+
+    /**
+     * Get the AchievementGranted event to use
+     *
+     * @return class-string<AchievementGranted>
+     */
+    public static function getAchievementGrantedEvent(): string
+    {
+        return static::get('events.achievement_granted', AchievementGranted::class);
+    }
+
+    /**
+     * Get the AchievementRevoked event to use
+     *
+     * @return class-string<AchievementRevoked>
+     */
+    public static function getAchievementRevokedEvent(): string
+    {
+        return static::get('events.achievement_revoked', AchievementRevoked::class);
     }
 }

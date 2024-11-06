@@ -3,11 +3,16 @@
 namespace BradieTilley\Achievements;
 
 use BradieTilley\Achievements\Contracts\EarnsAchievements;
+use BradieTilley\Achievements\Events\AchievementGranted;
+use BradieTilley\Achievements\Events\AchievementRevoked;
 use BradieTilley\Achievements\Models\Achievement;
+use BradieTilley\Achievements\Models\UserAchievement;
 use Illuminate\Cache\CacheManager;
-use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Contracts\Bus\Dispatcher as BusDispatcher;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -17,6 +22,8 @@ class Achievements
     public const CACHE_KEY_READY = 'bradietilley_achievements.ready';
 
     public const CACHE_KEY_ACHIEVEMENTS = 'bradietilley_achievements.achievements';
+
+    public const CACHE_KEY_ACHIEVEMENT = 'bradietilley_achievements.achievement.';
 
     public const CACHE_KEY_EVENTS = 'bradietilley_achievement.events';
 
@@ -63,8 +70,11 @@ class Achievements
         \Illuminate\Cache\Events\WritingManyKeys::class,
     ];
 
-    public function __construct(CacheManager $cache, protected Dispatcher $bus)
-    {
+    public function __construct(
+        protected BusDispatcher $bus,
+        protected EventsDispatcher $events,
+        CacheManager $cache,
+    ) {
         $this->cache = $cache->store();
     }
 
@@ -113,6 +123,24 @@ class Achievements
             static::CACHE_KEY_ACHIEVEMENTS,
             now()->addHour(),
             fn () => Achievement::all()->collect(),
+        );
+    }
+
+    public function getAchievement(string|Achievement $achievement): Achievement
+    {
+        $class = Achievement::getConfiguredClass();
+        $name = $achievement instanceof Achievement ? $achievement->name : $achievement;
+
+        if ($achievement::class === $class) {
+            return $achievement;
+        }
+
+        return $this->cache->remember(
+            static::CACHE_KEY_ACHIEVEMENT.$name,
+            now()->addHour(),
+            function () use ($class, $name) {
+                return $class::where('name', $name)->firstOrFail();
+            },
         );
     }
 
@@ -184,6 +212,43 @@ class Achievements
             }
 
             $this->bus->dispatchSync(new $job($achievement, $user, $event, $payload));
+        }
+    }
+
+    public function giveAchievement(Achievement $achievement, Model&EarnsAchievements $user): void
+    {
+        try {
+            $userAchievement = UserAchievement::getConfiguredClass();
+            $userAchievement = new $userAchievement([
+                'user_type' => $user->getMorphClass(),
+                'user_id' => $user->getKey(),
+                'achievement_id' => $achievement->getKey(),
+            ]);
+
+            $achievement->userAchievements()->save($userAchievement);
+
+            $event = AchievementGranted::getConfiguredClass();
+            $this->events->dispatch(new $event($achievement, $user));
+        } catch (QueryException $e) {
+            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
+                return;
+            }
+
+            throw $e;
+        }
+    }
+
+    public function revokeAchievement(Achievement $achievement, Model&EarnsAchievements $user, bool $force = false): void
+    {
+        if ($achievement->reverseable || $force) {
+            $existing = $achievement->userAchievements()->whereMorphedTo('user', $user)->first();
+
+            if ($existing) {
+                $existing->delete();
+
+                $event = AchievementRevoked::getConfiguredClass();
+                $this->events->dispatch(new $event($achievement, $user));
+            }
         }
     }
 }

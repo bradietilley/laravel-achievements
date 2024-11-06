@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -99,22 +98,7 @@ class Achievement extends Model
      */
     public function give(Model&EarnsAchievements $user): static
     {
-        try {
-            $userAchievement = UserAchievement::getConfiguredClass();
-            $userAchievement = new $userAchievement([
-                'user_type' => $user->getMorphClass(),
-                'user_id' => $user->getKey(),
-                'achievement_id' => $this->getKey(),
-            ]);
-
-            $this->userAchievements()->save($userAchievement);
-        } catch (QueryException $e) {
-            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
-                return $this;
-            }
-
-            throw $e;
-        }
+        Achievements::make()->giveAchievement($this, $user);
 
         return $this;
     }
@@ -124,11 +108,7 @@ class Achievement extends Model
      */
     public function revoke(Model&EarnsAchievements $user, bool $force = false): static
     {
-        if ($this->reverseable || $force) {
-            $existing = $this->userAchievements()->whereMorphedTo('user', $user)->first();
-
-            $existing?->delete();
-        }
+        Achievements::make()->revokeAchievement($this, $user, $force);
 
         return $this;
     }
@@ -144,10 +124,9 @@ class Achievement extends Model
     /**
      * Find an achievement by name
      *
-     * @param string|TAchievement $achievement
-     * @return TAchievement
+     * @param string|static $achievement
      */
-    public static function findByName(string|self $achievement): self
+    public static function findByName(string|self $achievement): static
     {
         if ($achievement instanceof self) {
             return $achievement;
