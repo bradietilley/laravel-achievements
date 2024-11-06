@@ -2,7 +2,7 @@
 
 namespace BradieTilley\Achievements;
 
-use BradieTilley\Achievements\Listeners\EventListener;
+use BradieTilley\Achievements\Jobs\ProcessAchievement;
 use BradieTilley\Achievements\Models\Achievement;
 use BradieTilley\Achievements\Models\Reputation;
 use BradieTilley\Achievements\Models\ReputationLog;
@@ -64,12 +64,12 @@ class AchievementsConfig
     }
 
     /**
-     * Get the event listener class to use
+     * Get the ProcessAchievement job to use
      *
-     * @return class-string<EventListener>
+     * @return class-string<ProcessAchievement>
      */
-    public static function getListenerClass(): string
+    public static function getProcessAchievementJob(): string
     {
-        return static::get('classes.event_listener', EventListener::class);
+        return static::get('jobs.process_achievement', ProcessAchievement::class);
     }
 }

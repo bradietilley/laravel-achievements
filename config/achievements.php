@@ -1,6 +1,6 @@
 <?php
 
-use BradieTilley\Achievements\Listeners\EventListener;
+use BradieTilley\Achievements\Jobs\ProcessAchievement;
 use BradieTilley\Achievements\Models\Achievement;
 use BradieTilley\Achievements\Models\Reputation;
 use BradieTilley\Achievements\Models\ReputationLog;
@@ -17,7 +17,7 @@ return [
         'reputation_log' => ReputationLog::class,
     ],
 
-    'classes' => [
-        'event_listener' => EventListener::class,
+    'jobs' => [
+        'process_achievement' => ProcessAchievement::class,
     ],
 ];

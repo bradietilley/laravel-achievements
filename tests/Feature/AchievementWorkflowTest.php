@@ -4,6 +4,7 @@ use BradieTilley\Achievements\Achievements;
 use BradieTilley\Achievements\Criteria\CurrentDateCriteria;
 use BradieTilley\Achievements\Criteria\MinimumPointsCriteria;
 use BradieTilley\Achievements\Models\Achievement;
+use BradieTilley\Achievements\Models\UserAchievement;
 use Illuminate\Support\Facades\Auth;
 use Workbench\App\Events\BasicExampleEvent;
 
@@ -21,6 +22,20 @@ test('an achievement can be automatically granted if no criteria is added', func
 
     $user->doSomething();
     expect($user->hasAchievement($achievement))->toBe(true);
+});
+
+test('an achievement will not be granted to guests', function () {
+    $achievement = Achievement::factory()->events([
+        BasicExampleEvent::class,
+    ])->criteria([])->createOne();
+
+    Achievements::make()->regenerateCache();
+
+    $user = create_a_user()->refresh();
+    $user->doSomething();
+
+    // no errors, no achievements
+    expect(UserAchievement::count())->toBe(0);
 });
 
 test('an achievement can be automatically granted if a criteria is added and it passes', function () {

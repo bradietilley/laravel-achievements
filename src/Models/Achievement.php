@@ -64,6 +64,9 @@ class Achievement extends Model
         return $this->hasMany(UserAchievement::getConfiguredClass());
     }
 
+    /**
+     * Nominate Eloquent model events to listen to.
+     */
     public function listenToEloquent(string|Model $model, string ...$events): static
     {
         $model = $model instanceof Model ? $model::class : $model;
@@ -72,6 +75,9 @@ class Achievement extends Model
         return $this->listenTo(...$events);
     }
 
+    /**
+     * Nominate any event to listen to
+     */
     public function listenTo(string ...$events): static
     {
         $events = Collection::make($this->events)
@@ -85,6 +91,9 @@ class Achievement extends Model
         return $this;
     }
 
+    /**
+     * Give this achievement to the given user
+     */
     public function give(Model&EarnsAchievements $user): static
     {
         try {
@@ -107,6 +116,9 @@ class Achievement extends Model
         return $this;
     }
 
+    /**
+     * Revoke this achievement from the given user, if reversable or forced.
+     */
     public function revoke(Model&EarnsAchievements $user, bool $force = false): static
     {
         if ($this->reverseable || $force) {
@@ -118,12 +130,17 @@ class Achievement extends Model
         return $this;
     }
 
+    /**
+     * Get all cached achievements
+     */
     public static function allCached(): Collection
     {
         return Achievements::make()->getAchievements();
     }
 
     /**
+     * Find an achievement by name
+     *
      * @param string|TAchievement $achievement
      * @return TAchievement
      */
