@@ -63,4 +63,9 @@ class Reputation extends Model
 
         return $this;
     }
+
+    public function setPoints(int $points, ?string $message = null, ?Model $user = null): Reputation
+    {
+        return $this->addPoints($points - $this->points, $message, $user);
+    }
 }

@@ -7,7 +7,7 @@ use BradieTilley\Achievements\Contracts\EarnsReputation;
 use BradieTilley\Achievements\Models\Achievement;
 use Illuminate\Database\Eloquent\Model;
 
-class CriteriaForReputationPoints extends Criteria
+class MinimumPointsCriteria extends Criteria
 {
     public function __construct(public int $points)
     {
