@@ -2,12 +2,12 @@
 
 namespace BradieTilley\Achievements\Models;
 
+use BradieTilley\Achievements\Achievements;
 use BradieTilley\Achievements\AchievementsConfig;
 use BradieTilley\Achievements\Contracts\EarnsReputation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @property int $points
@@ -35,11 +35,17 @@ class Reputation extends Model
         return AchievementsConfig::getReputationModel();
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function user(): MorphTo
     {
         return $this->morphTo('user');
     }
 
+    /**
+     * @return HasMany<ReputationLog, $this>
+     */
     public function logs(): HasMany
     {
         return $this->hasMany(ReputationLog::alias(), 'reputation_id');
@@ -47,7 +53,7 @@ class Reputation extends Model
 
     public function addPoints(int $points = 1, ?string $message = null, ?Model $user = null): Reputation
     {
-        $user ??= Auth::user();
+        $user ??= Achievements::make()->user();
 
         $log = ReputationLog::alias();
         $log = new $log([

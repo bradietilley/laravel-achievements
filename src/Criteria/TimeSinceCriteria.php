@@ -15,6 +15,9 @@ class TimeSinceCriteria extends Criteria
     {
     }
 
+    /**
+     * @param null|array<mixed> $payload
+     */
     public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool
     {
         $value = data_get($user, $this->field);
@@ -24,6 +27,7 @@ class TimeSinceCriteria extends Criteria
         }
 
         try {
+            /** @phpstan-ignore-next-line */
             $value = Carbon::parse($value);
         } catch (Throwable) {
             return false;

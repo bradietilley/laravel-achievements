@@ -16,6 +16,9 @@ class ProcessAchievement implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * @param null|array<mixed> $payload
+     */
     public function __construct(
         public readonly Achievement $achievement,
         public readonly Model&EarnsAchievements $user,

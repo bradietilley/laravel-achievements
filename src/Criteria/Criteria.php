@@ -13,20 +13,29 @@ use JsonSerializable;
 use ReflectionClass;
 use ReflectionProperty;
 
+/**
+ * @implements Arrayable<string, mixed>
+ */
 abstract class Criteria implements Arrayable, Jsonable, JsonSerializable
 {
+    /**
+     * @param null|array<mixed> $payload
+     */
     abstract public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool;
 
     /**
      * Convert the object into something JSON serializable.
      *
-     * @return array<TKey, TValue>
+     * @return array<string, mixed>
      */
     public function jsonSerialize(): array
     {
         return $this->toArray();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         $reflection = new ReflectionClass($this);
@@ -41,10 +50,10 @@ abstract class Criteria implements Arrayable, Jsonable, JsonSerializable
      * Convert the fluent instance to JSON.
      *
      * @param  int  $options
-     * @return string
      */
-    public function toJson($options = 0)
+    public function toJson($options = 0): string
     {
+        /** @phpstan-ignore-next-line */
         return json_encode($this->jsonSerialize(), $options);
     }
 

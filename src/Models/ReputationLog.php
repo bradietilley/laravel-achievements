@@ -37,11 +37,17 @@ class ReputationLog extends Model
         return AchievementsConfig::getReputationLogModel();
     }
 
+    /**
+     * @return BelongsTo<Reputation, $this>
+     */
     public function reputation(): BelongsTo
     {
         return $this->belongsTo(Reputation::alias(), 'reputation_id');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function user(): MorphTo
     {
         return $this->morphTo('user');

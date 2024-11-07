@@ -12,6 +12,9 @@ class HasFieldCountCriteria extends Criteria
     {
     }
 
+    /**
+     * @param null|array<mixed> $payload
+     */
     public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool
     {
         $count = data_get($user, $this->field);

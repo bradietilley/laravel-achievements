@@ -29,6 +29,8 @@ class Achievements
 
     /**
      * A list of ignored events, some irrelevant, some to prevent recursion
+     *
+     * @var array<int,string>
      */
     public const DEFAULT_IGNORED_EVENTS = [
         \Illuminate\Console\Events\ArtisanStarting::class,
@@ -134,15 +136,15 @@ class Achievements
         $class = Achievement::alias();
         $name = $achievement instanceof Achievement ? $achievement->name : $achievement;
 
-        if ($achievement::class === $class) {
+        if ($achievement instanceof Achievement && $achievement::class === $class) {
             return $achievement;
         }
 
         return $this->cache->remember(
             static::CACHE_KEY_ACHIEVEMENT.$name,
             now()->addHour(),
-            function () use ($class, $name) {
-                return $class::where('name', $name)->firstOrFail();
+            function () use ($class, $name): Achievement {
+                return $class::query()->where('name', $name)->firstOrFail();
             },
         );
     }
@@ -154,6 +156,7 @@ class Achievements
      */
     public function getEvents(): array
     {
+        /** @phpstan-ignore-next-line */
         return $this->cache->get(static::CACHE_KEY_EVENTS, []);
     }
 
@@ -166,7 +169,7 @@ class Achievements
      */
     public function registerEventListener(): void
     {
-        Event::listen('*', function (string $event, mixed $payload) {
+        Event::listen('*', function (string $event, array $payload) {
             if (in_array($event, $this->getIgnoredEvents())) {
                 return;
             }
@@ -194,6 +197,8 @@ class Achievements
 
     /**
      * Get a list of all events to ignore.
+     *
+     * @return array<int,string>
      */
     public function getIgnoredEvents(): array
     {
@@ -202,6 +207,8 @@ class Achievements
 
     /**
      * Handle the inound event (which is a non-ignored event).
+     *
+     * @param array<int,string> $payload
      */
     public function handleEvent(string $event, array $payload): void
     {

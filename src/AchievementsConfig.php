@@ -12,19 +12,6 @@ use BradieTilley\Achievements\Models\UserAchievement;
 
 class AchievementsConfig
 {
-    /** @var array<string, mixed> */
-    protected static array $cache = [];
-
-    protected static function get(string $key, mixed $default = null): mixed
-    {
-        return static::$cache[$key] ??= config("achievements.{$key}", $default);
-    }
-
-    public static function clearCache(): void
-    {
-        static::$cache = [];
-    }
-
     /**
      * Get the Achievement model class
      *
@@ -32,7 +19,8 @@ class AchievementsConfig
      */
     public static function getAchievementModel(): string
     {
-        return static::get('models.achievement', Achievement::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.models.achievement', Achievement::class);
     }
 
     /**
@@ -42,7 +30,8 @@ class AchievementsConfig
      */
     public static function getUserAchievementModel(): string
     {
-        return static::get('models.user_achievement', UserAchievement::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.models.user_achievement', UserAchievement::class);
     }
 
     /**
@@ -52,7 +41,8 @@ class AchievementsConfig
      */
     public static function getReputationModel(): string
     {
-        return static::get('models.reputation', Reputation::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.models.reputation', Reputation::class);
     }
 
     /**
@@ -62,7 +52,8 @@ class AchievementsConfig
      */
     public static function getReputationLogModel(): string
     {
-        return static::get('models.reputation_log', ReputationLog::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.models.reputation_log', ReputationLog::class);
     }
 
     /**
@@ -72,7 +63,8 @@ class AchievementsConfig
      */
     public static function getProcessAchievementJob(): string
     {
-        return static::get('jobs.process_achievement', ProcessAchievement::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.jobs.process_achievement', ProcessAchievement::class);
     }
 
     /**
@@ -82,7 +74,8 @@ class AchievementsConfig
      */
     public static function getAchievementGrantedEvent(): string
     {
-        return static::get('events.achievement_granted', AchievementGranted::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.events.achievement_granted', AchievementGranted::class);
     }
 
     /**
@@ -92,6 +85,7 @@ class AchievementsConfig
      */
     public static function getAchievementRevokedEvent(): string
     {
-        return static::get('events.achievement_revoked', AchievementRevoked::class);
+        /** @phpstan-ignore-next-line */
+        return config('achievements.events.achievement_revoked', AchievementRevoked::class);
     }
 }

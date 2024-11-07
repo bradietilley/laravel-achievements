@@ -17,8 +17,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
- * @template TAchievement of self
- *
  * @property string $name
  * @property array<int, Criteria> $criteria
  * @property array<int, string> $events
@@ -61,6 +59,9 @@ class Achievement extends Model
         return new AchievementFactory();
     }
 
+    /**
+     * @return HasMany<UserAchievement, $this>
+     */
     public function userAchievements(): HasMany
     {
         return $this->hasMany(UserAchievement::alias());
@@ -115,6 +116,8 @@ class Achievement extends Model
 
     /**
      * Get all cached achievements
+     *
+     * @return Collection<int, Achievement>
      */
     public static function allCached(): Collection
     {
@@ -132,6 +135,6 @@ class Achievement extends Model
             return $achievement;
         }
 
-        return static::where('name', $achievement)->firstOrFail();
+        return static::query()->where('name', $achievement)->firstOrFail();
     }
 }
