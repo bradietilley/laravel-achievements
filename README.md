@@ -1,4 +1,4 @@
-# Audit Logs
+# Achievements
 
 
 ![Static Analysis](https://github.com/bradietilley/laravel-achievements/actions/workflows/static.yml/badge.svg)
