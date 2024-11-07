@@ -6,7 +6,7 @@ use BradieTilley\Achievements\Contracts\EarnsAchievements;
 use BradieTilley\Achievements\Models\Achievement;
 use Illuminate\Database\Eloquent\Model;
 
-class HasFIeldValueCriteria extends Criteria
+class FieldHasValueCriteria extends Criteria
 {
     public function __construct(public string $field, public mixed $value)
     {
@@ -16,6 +16,6 @@ class HasFIeldValueCriteria extends Criteria
     {
         $value = data_get($user, $this->field);
 
-        return $value >= $this->value;
+        return $value === $this->value;
     }
 }

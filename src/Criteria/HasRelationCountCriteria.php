@@ -14,7 +14,7 @@ class HasRelationCountCriteria extends Criteria
 
     public function isEligible(Achievement $achievement, Model&EarnsAchievements $user, string $event, array|null $payload): bool
     {
-        $count = $user->{$this->relation};
+        $count = $user->{$this->relation}()->count();
 
         return $count >= $this->count;
     }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HasRelationExistsCriteria extends Criteria
 {
-    public function __construct(public string $relation, public bool $exists)
+    public function __construct(public string $relation, public bool $exists = true)
     {
     }
 
