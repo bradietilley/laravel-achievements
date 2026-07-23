@@ -54,6 +54,6 @@ class TimeSinceCriteria extends Criteria
 
     public function getThresholdDate(CarbonImmutable $now): CarbonImmutable
     {
-        return $now->sub($this->unit, $this->value, $this->overflow);
+        return $now->subUnit($this->unit, $this->value, $this->overflow);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace BradieTilley\Achievements;
 
+use BackedEnum;
 use BradieTilley\Achievements\Criteria\Criteria;
 use BradieTilley\Achievements\Criteria\CurrentDateCriteria;
 use BradieTilley\Achievements\Criteria\DateBetweenCriteria;
@@ -218,21 +219,37 @@ class AchievementsConfig
         throw new InvalidArgumentException("Configured value for [{$key}] must be a string or null.");
     }
 
-    protected static function resolveNullableStringOrEnum(string $key): string|UnitEnum|null
+    protected static function resolveNullableStringOrEnum(string $key): string|null
     {
-        $value = self::resolveNullableString($key);
+        $value = config($key);
 
-        if ($value === null || is_string($value) || is_a($value, UnitEnum::class, true)) {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_string($value)) {
             return $value;
         }
 
-        throw new InvalidArgumentException("Configured value for [{$key}] must be a string or null.");
+        if ($value instanceof BackedEnum) {
+            if (! is_string($value->value)) {
+                throw new InvalidArgumentException("Configured value for [{$key}] must be a string-backed enum, string, or null.");
+            }
+
+            return $value->value;
+        }
+
+        if ($value instanceof UnitEnum) {
+            return $value->name;
+        }
+
+        throw new InvalidArgumentException("Configured value for [{$key}] must be a string, UnitEnum, or null.");
     }
 
     /**
      * Get the queue connection to use for the ProcessAchievement job
      */
-    public static function getJobConnection(): string|UnitEnum|null
+    public static function getJobConnection(): string|null
     {
         return self::resolveNullableStringOrEnum('achievements.jobs.connection');
     }
@@ -240,7 +257,7 @@ class AchievementsConfig
     /**
      * Get the queue to use for the ProcessAchievement job
      */
-    public static function getJobQueue(): string|UnitEnum|null
+    public static function getJobQueue(): string|null
     {
         return self::resolveNullableStringOrEnum('achievements.jobs.queue');
     }
