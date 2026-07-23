@@ -1,0 +1,68 @@
+{
+    "name": "bradietilley/laravel-achievements",
+    "description": "Achievement and reputation system for Laravel applications",
+    "keywords": [
+        "laravel",
+        "achievements",
+        "reputation",
+        "gamification"
+    ],
+    "homepage": "https://github.com/bradietilley/laravel-achievements",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bradie Tilley",
+            "homepage": "https://github.com/bradietilley",
+            "email": "bradietilley@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3|^8.4|^8.5",
+        "laravel/framework": "^13.0",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.19",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^4.0",
+        "phpstan/phpstan": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "BradieTilley\\Achievements\\": "src/",
+            "BradieTilley\\Achievements\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/pint --test",
+        "analyse": "vendor/bin/phpstan analyse",
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BradieTilley\\Achievements\\AchievementsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
